@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════════════════
+   CivicAI – Intelligent Election Companion
+   Global Styles & Animations
+   ═══════════════════════════════════════════════════ */
+
+body { font-family: 'Inter', sans-serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+/* ─── Inputs ─── */
+.civic-input {
+  width: 100%; padding: 10px 14px; border-radius: 10px;
+  border: 1px solid #e2e8f0; background: #f0f4f8;
+  font-size: 14px; transition: all 0.2s;
+}
+.civic-input:focus {
+  outline: none; background: #fff;
+  border-color: #4059aa; box-shadow: 0 0 0 3px rgba(64,89,170,0.12);
+}
+
+/* ─── Quick Prompt Buttons ─── */
+.qp-btn {
+  padding: 6px 14px; border-radius: 9999px; border: 1px solid #e2e8f0;
+  font-size: 12px; color: #64748b; background: white;
+  transition: all 0.2s; cursor: pointer;
+}
+.qp-btn:hover { border-color: #4059aa; color: #4059aa; }
+.qp-btn:active { transform: scale(0.95); }
+
+/* ─── Nav ─── */
+.nav-active {
+  color: white !important; background: #0a2540;
+  border-radius: 14px; box-shadow: 0 4px 12px rgba(10,37,64,0.25);
+}
+.nav-active .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+.nav-active span:last-child { color: white; font-weight: 700; }
+
+/* ─── Animations ─── */
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.animate-fadeIn { animation: fadeIn 0.35s ease-out forwards; }
+
+@keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+.slide-up { animation: slideUp 0.5s ease-out forwards; }
+
+@keyframes scan { 0%{top:0%;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%;opacity:0} }
+.scan-line {
+  position:absolute; left:0; right:0; height:2px;
+  background:linear-gradient(to right,transparent,#4059aa,transparent);
+  box-shadow:0 0 15px 2px #4059aa;
+  pointer-events:none; display:none; z-index:10;
+}
+.is-scanning .scan-line { display:block; animation:scan 2s linear infinite; }
+
+@keyframes typingDots { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+.typing-dot { width:7px;height:7px;border-radius:50%;background:#4059aa;display:inline-block; }
+.typing-dot:nth-child(1){animation:typingDots 1.4s infinite 0s}
+.typing-dot:nth-child(2){animation:typingDots 1.4s infinite 0.2s}
+.typing-dot:nth-child(3){animation:typingDots 1.4s infinite 0.4s}
+
+@keyframes msgSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.msg-enter { animation: msgSlide 0.3s ease-out forwards; }
+
+@keyframes pulseAi { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
+.pulse-ai { animation: pulseAi 2s infinite ease-in-out; }
+
+@keyframes progressAnim { from{width:0%} to{width:var(--target-width,45%)} }
+
+/* ─── Fade-in items (timeline, etc.) ─── */
+@keyframes fadeInItem { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+.fade-in-item { opacity:0; animation: fadeInItem 0.4s ease-out forwards; }
+
+/* ─── Chat Bubbles ─── */
+.bubble-ai { border-radius: 14px 14px 14px 2px; }
+.bubble-user { border-radius: 14px 14px 2px 14px; }
+
+/* ─── ELI10 ─── */
+.eli10-content { max-height:0; opacity:0; overflow:hidden; transition:all 0.3s ease; margin-top:0; }
+.eli10-content.active { max-height:200px; opacity:1; margin-top:8px; }
+
+/* ─── Quiz ─── */
+.quiz-option { cursor:pointer; transition:all 0.2s; }
+.quiz-option:hover { border-color:#4059aa; background:rgba(64,89,170,0.04); }
+.quiz-option.correct { border-color:#059669!important; background:#ecfdf5!important; }
+.quiz-option.incorrect { border-color:#dc2626!important; background:#fef2f2!important; }
+.quiz-option.disabled { pointer-events:none; opacity:0.7; }
+
+/* ─── Registration Step Indicators ─── */
+.reg-step-indicator.active div:first-child { background:#0a2540; color:white; }
+.reg-step-indicator.active span { color:#0a2540; }
+.reg-step-indicator.done div:first-child { background:#059669; color:white; }
+.reg-step-indicator.done span { color:#059669; }
+
+/* ─── Scrollbar ─── */
+#chat-messages::-webkit-scrollbar { width:5px; }
+#chat-messages::-webkit-scrollbar-track { background:transparent; }
+#chat-messages::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
+
+/* ─── View Transitions ─── */
+.view-page { transition: opacity 0.25s ease; }
+
+/* ─── Voice ─── */
+.voice-recording { color:#dc2626!important; }
+.voice-recording .material-symbols-outlined { animation:pulseAi 0.8s infinite ease-in-out; }
+
+/* ─── Candidate Cards ─── */
+.candidate-card { transition: all 0.2s; }
+.candidate-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+/* ─── Booth Cards ─── */
+.booth-card { transition: all 0.2s; }
+.booth-card:hover { border-color: #059669; }
+
+/* ─── Pulse Icon ─── */
+@keyframes pulseIcon { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.pulse-icon { animation: pulseIcon 1.5s infinite; }

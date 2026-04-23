@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CivicAI – Intelligent Election Companion</title>
+  <meta name="description" content="AI-powered civic platform: secure voter registration, personalized election guidance, misinformation detection, polling booth finder, and more."/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "civic-blue": "#0a2540",
+            "civic-emerald": "#059669",
+            "civic-emerald-light": "#d1fae5",
+            "civic-navy": "#10294a",
+            "civic-accent": "#4059aa",
+            "civic-gold": "#f59e0b",
+            "civic-surface": "#f0f4f8",
+            "civic-card": "#ffffff",
+            "civic-muted": "#64748b",
+            "civic-danger": "#dc2626",
+            "civic-success": "#16a34a",
+            "civic-warn": "#d97706"
+          },
+          fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+          fontSize: {
+            "display": ["42px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "800" }],
+            "heading": ["24px", { lineHeight: "1.3", fontWeight: "700" }],
+            "subheading": ["18px", { lineHeight: "1.4", fontWeight: "600" }],
+            "body": ["15px", { lineHeight: "1.6", fontWeight: "400" }],
+            "caption": ["12px", { lineHeight: "1.3", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/src/style.css"/>
+</head>
+<body class="bg-civic-surface font-inter text-slate-800 min-h-screen pb-24">
+
+  <!-- ═══════ TOP BAR ═══════ -->
+  <header class="flex justify-between items-center w-full px-4 md:px-6 h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm fixed top-0 z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-civic-blue to-civic-accent flex items-center justify-center shadow-md">
+        <span class="material-symbols-outlined text-white text-lg">account_balance</span>
+      </div>
+      <div>
+        <span class="text-lg font-extrabold text-civic-blue tracking-tight">CivicAI</span>
+        <span class="hidden sm:inline text-[10px] ml-1.5 bg-civic-emerald-light text-civic-emerald font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Live</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative" id="lang-dropdown-wrap">
+        <button id="lang-btn" class="p-2 hover:bg-slate-100 transition-colors rounded-full text-civic-muted active:scale-90">
+          <span class="material-symbols-outlined text-[20px]">translate</span>
+        </button>
+        <div id="lang-dropdown" class="hidden absolute right-0 top-12 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 min-w-[150px] z-50 animate-fadeIn">
+          <button data-lang="en" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>English</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check">check_circle</span></button>
+          <button data-lang="hi" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>हिन्दी</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden">check_circle</span></button>
+          <button data-lang="bn" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>বাংলা</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden">check_circle</span></button>
+        </div>
+      </div>
+      <button id="eli10-toggle" class="p-2 hover:bg-amber-50 transition-colors rounded-full text-civic-muted active:scale-90" title="Simple Mode">
+        <span class="material-symbols-outlined text-[20px]">child_care</span>
+      </button>
+      <div id="user-avatar" class="w-8 h-8 rounded-full bg-civic-accent flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:ring-2 hover:ring-civic-accent/30 transition-all" onclick="navigateTo('profile')">
+        <span class="material-symbols-outlined text-sm">person</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ VIEW: CHAT (HOME) ═══════════════════ -->
+  <main id="view-chat" class="view-page pt-20 max-w-6xl mx-auto px-4 md:px-6">
+    <!-- Hero -->
+    <section class="py-8 grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+      <div class="lg:col-span-3 space-y-5">
+        <div class="inline-flex items-center px-3 py-1 rounded-full bg-civic-emerald-light text-civic-emerald font-caption tracking-wider">
+          <span class="material-symbols-outlined text-sm mr-1.5 animate-spin" style="animation-duration:3s">auto_awesome</span>
+          AI-Powered Civic Intelligence
+        </div>
+        <h1 class="text-display text-civic-blue">Your Intelligent Election Companion</h1>
+        <p class="text-body text-civic-muted max-w-lg">Secure registration, personalized guidance, misinformation detection — everything you need for your democratic journey.</p>
+        <div class="flex flex-wrap gap-3">
+          <button onclick="navigateTo('register')" class="px-6 py-3 bg-civic-blue text-white font-semibold rounded-xl hover:bg-civic-accent transition-all shadow-md active:scale-95 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">how_to_reg</span> Register to Vote
+          </button>
+          <button onclick="document.getElementById('chat-input').focus()" class="px-6 py-3 bg-white text-civic-blue border border-slate-200 font-semibold rounded-xl hover:bg-slate-50 transition-all active:scale-95 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">chat</span> Ask AI
+          </button>
+        </div>
+      </div>
+      <!-- Journey Progress Card -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5">
+          <h3 class="text-caption text-civic-blue uppercase tracking-widest mb-4">Your Journey</h3>
+          <div id="hero-journey" class="space-y-2.5">
+            <!-- Injected by JS -->
+          </div>
+          <div class="mt-4 flex items-center gap-2">
+            <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden"><div id="hero-journey-bar" class="h-full bg-civic-emerald rounded-full transition-all duration-1000" style="width:0%"></div></div>
+            <span id="hero-journey-pct" class="text-caption text-civic-muted">0%</span>
+          </div>
+        </div>
+        <div class="bg-gradient-to-br from-civic-blue to-civic-navy rounded-2xl p-5 text-white shadow-xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-civic-accent opacity-20 blur-2xl -mr-12 -mt-12"></div>
+          <h3 class="text-caption uppercase tracking-widest mb-3 text-emerald-300">Quick Status</h3>
+          <div class="grid grid-cols-2 gap-3 text-center relative z-10">
+            <div class="bg-white/10 rounded-xl p-3"><div class="text-xl font-bold" id="stat-queries">0</div><div class="text-[10px] text-slate-300">AI Queries</div></div>
+            <div class="bg-white/10 rounded-xl p-3"><div class="text-xl font-bold" id="stat-verified">0</div><div class="text-[10px] text-slate-300">Facts Checked</div></div>
+            <div class="bg-white/10 rounded-xl p-3"><div class="text-xl font-bold text-civic-gold" id="stat-impact">0</div><div class="text-[10px] text-slate-300">Impact Score</div></div>
+            <div class="bg-white/10 rounded-xl p-3"><div class="text-xl font-bold text-emerald-400" id="stat-level">Lv 1</div><div class="text-[10px] text-slate-300">Citizen Level</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat Interface -->
+    <section class="mb-8">
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm flex flex-col h-[520px] overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div class="flex items-center gap-2">
+            <div class="w-2.5 h-2.5 rounded-full bg-civic-emerald animate-pulse"></div>
+            <span class="font-semibold text-sm text-civic-blue">Election Intelligence Assistant</span>
+          </div>
+          <span class="px-2 py-0.5 bg-blue-50 text-civic-accent text-[10px] font-bold rounded uppercase">Gemini + Mock</span>
+        </div>
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+        <div class="p-4 border-t border-slate-100 bg-slate-50/30">
+          <div id="quick-prompts" class="flex gap-2 mb-3 flex-wrap">
+            <button class="quick-prompt qp-btn">How do I vote?</button>
+            <button class="quick-prompt qp-btn">Documents needed</button>
+            <button class="quick-prompt qp-btn">Find my polling booth</button>
+            <button class="quick-prompt qp-btn">Am I registered?</button>
+            <button class="quick-prompt qp-btn">Check a fact</button>
+          </div>
+          <div class="relative">
+            <textarea id="chat-input" class="w-full pl-4 pr-24 py-3 rounded-xl border border-slate-200 bg-white focus:border-civic-accent focus:ring-2 focus:ring-civic-accent/10 transition-all resize-none text-sm" placeholder="Ask your election question..." rows="2"></textarea>
+            <div class="absolute right-3 bottom-3 flex gap-2">
+              <button id="voice-btn" class="p-1.5 text-slate-400 hover:text-civic-blue transition-colors active:scale-90" title="Voice Input">
+                <span class="material-symbols-outlined text-[20px]">mic</span>
+              </button>
+              <button id="send-btn" class="p-2 bg-civic-blue text-white rounded-lg hover:bg-civic-accent transition-all shadow-sm active:scale-90">
+                <span class="material-symbols-outlined text-[18px]">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════ VIEW: REGISTER ═══════════════════ -->
+  <main id="view-register" class="view-page hidden pt-20 pb-8 px-4 md:px-6 max-w-3xl mx-auto">
+    <div class="space-y-6">
+      <div>
+        <h1 class="text-heading text-civic-blue mb-1">Secure Voter Registration</h1>
+        <p class="text-body text-civic-muted">Register using your unique identity credentials. All data is validated by AI.</p>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="flex items-center justify-between bg-white rounded-xl border border-slate-200/80 p-4">
+        <div id="reg-step-1-ind" class="flex flex-col items-center flex-1 reg-step-indicator active">
+          <div class="w-8 h-8 rounded-full bg-civic-blue text-white flex items-center justify-center text-sm font-bold mb-1">1</div>
+          <span class="text-[10px] font-semibold text-civic-blue">Profile</span>
+        </div>
+        <div class="h-px flex-1 bg-slate-200 mx-1"></div>
+        <div id="reg-step-2-ind" class="flex flex-col items-center flex-1 reg-step-indicator">
+          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold mb-1">2</div>
+          <span class="text-[10px] font-semibold text-slate-500">Identity</span>
+        </div>
+        <div class="h-px flex-1 bg-slate-200 mx-1"></div>
+        <div id="reg-step-3-ind" class="flex flex-col items-center flex-1 reg-step-indicator">
+          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold mb-1">3</div>
+          <span class="text-[10px] font-semibold text-slate-500">Verify</span>
+        </div>
+        <div class="h-px flex-1 bg-slate-200 mx-1"></div>
+        <div id="reg-step-4-ind" class="flex flex-col items-center flex-1 reg-step-indicator">
+          <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold mb-1">4</div>
+          <span class="text-[10px] font-semibold text-slate-500">Result</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Profile -->
+      <div id="reg-step-1" class="reg-step bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+        <h2 class="text-subheading text-civic-blue flex items-center gap-2"><span class="material-symbols-outlined text-civic-emerald">person</span> Personal Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><label class="text-caption text-civic-muted block mb-1">Full Name *</label><input id="reg-name" class="civic-input" placeholder="e.g. Rahul Sharma" type="text"/></div>
+          <div><label class="text-caption text-civic-muted block mb-1">Date of Birth *</label><input id="reg-dob" class="civic-input" type="date"/></div>
+          <div><label class="text-caption text-civic-muted block mb-1">State *</label>
+            <select id="reg-state" class="civic-input">
+              <option value="">Select State</option>
+              <option value="west-bengal">West Bengal</option><option value="maharashtra">Maharashtra</option><option value="delhi">Delhi</option>
+              <option value="karnataka">Karnataka</option><option value="tamil-nadu">Tamil Nadu</option><option value="uttar-pradesh">Uttar Pradesh</option>
+              <option value="rajasthan">Rajasthan</option><option value="kerala">Kerala</option>
+            </select>
+          </div>
+          <div><label class="text-caption text-civic-muted block mb-1">District *</label>
+            <select id="reg-district" class="civic-input"><option value="">Select District</option></select>
+          </div>
+        </div>
+        <label class="flex items-center gap-3 p-3 bg-civic-surface rounded-lg cursor-pointer">
+          <input id="reg-firsttime" type="checkbox" class="rounded border-slate-300 text-civic-accent focus:ring-civic-accent"/>
+          <div><span class="font-semibold text-sm">First-time Voter</span><br/><span class="text-[11px] text-civic-muted">We'll provide extra guidance for new voters</span></div>
+        </label>
+        <button id="reg-next-1" class="w-full py-3 bg-civic-blue text-white font-semibold rounded-xl hover:bg-civic-accent transition-all active:scale-[0.98] shadow-md">Continue to Identity Verification →</button>
+      </div>
+
+      <!-- Step 2: Identity -->
+      <div id="reg-step-2" class="reg-step hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+        <h2 class="text-subheading text-civic-blue flex items-center gap-2"><span class="material-symbols-outlined text-civic-accent">fingerprint</span> Identity Credentials</h2>
+        <div class="space-y-4">
+          <div><label class="text-caption text-civic-muted block mb-1">Aadhaar Number (12 digits) *</label><input id="reg-aadhaar" class="civic-input tracking-widest" placeholder="XXXX XXXX XXXX" maxlength="14" type="text"/></div>
+          <div id="aadhaar-feedback" class="hidden text-sm p-3 rounded-lg"></div>
+          <div><label class="text-caption text-civic-muted block mb-1">Mobile Number *</label><input id="reg-mobile" class="civic-input" placeholder="9876543210" maxlength="10" type="tel"/></div>
+          <div><label class="text-caption text-civic-muted block mb-1">Address *</label><textarea id="reg-address" class="civic-input resize-none" rows="2" placeholder="Your residential address"></textarea></div>
+        </div>
+        <!-- Document Checklist -->
+        <div class="bg-civic-surface rounded-xl p-4">
+          <h3 class="text-caption text-civic-blue uppercase tracking-widest mb-3">Document Checklist (AI Validated)</h3>
+          <div id="doc-checklist" class="space-y-2">
+            <div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-civic-muted text-[18px]" id="doc-id">radio_button_unchecked</span> Identity Proof (Aadhaar)</div>
+            <div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-civic-muted text-[18px]" id="doc-address">radio_button_unchecked</span> Address Proof</div>
+            <div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-civic-muted text-[18px]" id="doc-age">radio_button_unchecked</span> Age Proof (DOB)</div>
+            <div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-civic-muted text-[18px]" id="doc-mobile">radio_button_unchecked</span> Mobile Verification</div>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button id="reg-back-2" class="flex-1 py-3 bg-slate-100 text-civic-muted font-semibold rounded-xl hover:bg-slate-200 transition-all active:scale-[0.98]">← Back</button>
+          <button id="reg-next-2" class="flex-1 py-3 bg-civic-blue text-white font-semibold rounded-xl hover:bg-civic-accent transition-all active:scale-[0.98] shadow-md">Send OTP →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: OTP Verify -->
+      <div id="reg-step-3" class="reg-step hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
+        <h2 class="text-subheading text-civic-blue flex items-center gap-2"><span class="material-symbols-outlined text-civic-gold">verified</span> OTP Verification</h2>
+        <p class="text-body text-civic-muted">An OTP has been sent to your registered mobile number.</p>
+        <div id="otp-hint" class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-lg text-sm font-semibold"></div>
+        <div><label class="text-caption text-civic-muted block mb-1">Enter 6-digit OTP</label><input id="reg-otp" class="civic-input text-center tracking-[0.5em] text-xl font-bold" placeholder="● ● ● ● ● ●" maxlength="6" type="text"/></div>
+        <div id="otp-feedback" class="hidden text-sm p-3 rounded-lg"></div>
+        <button id="reg-verify-otp" class="w-full py-3 bg-civic-emerald text-white font-semibold rounded-xl hover:bg-emerald-700 transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-sm">shield</span> Verify & Complete Registration
+        </button>
+        <button id="reg-resend-otp" class="w-full py-2 text-civic-accent text-sm font-semibold hover:underline">Resend OTP</button>
+      </div>
+
+      <!-- Step 4: Results -->
+      <div id="reg-step-4" class="reg-step hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+        <div id="reg-result-content">
+          <!-- Injected by JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════ VIEW: GUIDE (Dashboard + Timeline + Booth + Election Day) ═══════════════════ -->
+  <main id="view-guide" class="view-page hidden pt-20 pb-8 px-4 md:px-6 max-w-7xl mx-auto">
+    <!-- Guide Tabs -->
+    <div class="flex gap-2 mb-6 flex-wrap">
+      <button data-guide="dashboard" class="guide-tab px-4 py-2 rounded-full text-sm font-semibold bg-civic-blue text-white shadow-md active:scale-95 transition-all">Dashboard</button>
+      <button data-guide="timeline" class="guide-tab px-4 py-2 rounded-full text-sm font-semibold bg-white text-civic-muted border border-slate-200 hover:border-civic-accent active:scale-95 transition-all">Timeline</button>
+      <button data-guide="booth" class="guide-tab px-4 py-2 rounded-full text-sm font-semibold bg-white text-civic-muted border border-slate-200 hover:border-civic-accent active:scale-95 transition-all">Booth Finder</button>
+      <button data-guide="election-day" class="guide-tab px-4 py-2 rounded-full text-sm font-semibold bg-white text-civic-muted border border-slate-200 hover:border-civic-accent active:scale-95 transition-all">Election Day</button>
+    </div>
+
+    <!-- Guide: Dashboard -->
+    <div id="guide-dashboard" class="guide-panel">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 space-y-6">
+          <!-- Voting Plan -->
+          <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-heading text-civic-blue">Your Voting Plan</h2>
+              <span id="plan-badge" class="px-3 py-1 bg-civic-emerald-light text-civic-emerald text-[10px] font-bold rounded-full uppercase">Active</span>
+            </div>
+            <div id="voting-plan-steps" class="space-y-3"></div>
+          </section>
+          <!-- Quiz CTA -->
+          <section class="bg-gradient-to-br from-civic-blue to-civic-navy rounded-2xl p-6 text-white relative overflow-hidden shadow-xl group">
+            <div class="relative z-10">
+              <h3 class="text-heading mb-2">Test Your Civic Knowledge</h3>
+              <p class="text-sm text-slate-300 mb-4">7 questions to earn your Civic Champion badge.</p>
+              <button id="start-quiz-btn" class="bg-civic-emerald text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-emerald-700 active:scale-95 transition-all shadow-lg">
+                <span class="material-symbols-outlined">quiz</span> Start Quiz
+              </button>
+            </div>
+            <span class="material-symbols-outlined absolute top-4 right-4 text-[120px] text-white/5 rotate-12">school</span>
+          </section>
+        </div>
+        <div class="lg:col-span-5 space-y-6">
+          <!-- Smart Reminders -->
+          <section class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5">
+            <div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-civic-gold">notifications_active</span><h3 class="text-subheading text-civic-blue">Smart Reminders</h3></div>
+            <div id="reminders-list" class="space-y-2.5"></div>
+          </section>
+          <!-- Journey Tracker -->
+          <section class="bg-gradient-to-br from-civic-blue to-civic-navy rounded-2xl shadow-xl p-5 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-civic-accent opacity-20 blur-3xl -mr-16 -mt-16"></div>
+            <h3 class="text-caption uppercase tracking-widest mb-4 text-emerald-300">Journey Tracker</h3>
+            <div id="journey-tracker" class="relative pl-6 space-y-5 border-l-2 border-white/20"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guide: Timeline -->
+    <div id="guide-timeline" class="guide-panel hidden">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <div class="flex gap-2 flex-wrap">
+          <button data-tl="general" class="tl-type-btn px-4 py-2 rounded-full text-sm font-semibold bg-civic-blue text-white shadow-md active:scale-95 transition-all">General</button>
+          <button data-tl="state" class="tl-type-btn px-4 py-2 rounded-full text-sm font-semibold bg-white text-civic-muted border border-slate-200 active:scale-95 transition-all">State</button>
+          <button data-tl="local" class="tl-type-btn px-4 py-2 rounded-full text-sm font-semibold bg-white text-civic-muted border border-slate-200 active:scale-95 transition-all">Local</button>
+        </div>
+        <div id="timeline-container" class="bg-gradient-to-br from-civic-blue to-civic-navy rounded-2xl shadow-xl p-6 text-white relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-48 h-48 bg-civic-accent opacity-20 blur-3xl -mr-24 -mt-24"></div>
+          <div id="timeline-content" class="relative pl-10 space-y-8 border-l-2 border-white/20"></div>
+        </div>
+        <!-- Scenario Simulator -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+          <div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-civic-gold">psychology</span><h3 class="text-subheading text-civic-blue">Scenario Simulator</h3></div>
+          <div class="flex gap-2 flex-wrap mb-4">
+            <button class="scenario-btn qp-btn">What if I miss registration?</button>
+            <button class="scenario-btn qp-btn">What if I lost my voter ID?</button>
+            <button class="scenario-btn qp-btn">What if I arrive late?</button>
+          </div>
+          <div id="scenario-result" class="hidden bg-amber-50 border border-amber-100 rounded-xl p-4 text-sm text-amber-900"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guide: Booth Finder -->
+    <div id="guide-booth" class="guide-panel hidden">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+          <h2 class="text-heading text-civic-blue mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-civic-emerald">location_on</span> Polling Booth Finder</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div><label class="text-caption text-civic-muted block mb-1">State</label>
+              <select id="booth-state" class="civic-input"><option value="">Select State</option><option value="west-bengal">West Bengal</option><option value="maharashtra">Maharashtra</option><option value="delhi">Delhi</option><option value="karnataka">Karnataka</option><option value="tamil-nadu">Tamil Nadu</option><option value="uttar-pradesh">Uttar Pradesh</option><option value="rajasthan">Rajasthan</option><option value="kerala">Kerala</option></select>
+            </div>
+            <div><label class="text-caption text-civic-muted block mb-1">District</label>
+              <select id="booth-district" class="civic-input"><option value="">Select District</option></select>
+            </div>
+          </div>
+          <button id="find-booth-btn" class="w-full py-3 bg-civic-blue text-white font-semibold rounded-xl hover:bg-civic-accent transition-all active:scale-[0.98] shadow-md flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-sm">search</span> Find My Polling Booth
+          </button>
+        </div>
+        <div id="booth-results" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- Guide: Election Day -->
+    <div id="guide-election-day" class="guide-panel hidden">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <h2 class="text-heading text-civic-blue flex items-center gap-2"><span class="material-symbols-outlined text-civic-emerald">how_to_vote</span> Election Day Assistant</h2>
+        <!-- What to Carry -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+          <h3 class="text-subheading text-civic-blue mb-4">📋 What to Carry</h3>
+          <div id="carry-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
+        <!-- Voting Process Steps -->
+        <div class="bg-gradient-to-br from-civic-blue to-civic-navy rounded-2xl shadow-xl p-6 text-white">
+          <h3 class="text-subheading mb-6">🗳️ Step-by-Step Voting Process</h3>
+          <div id="voting-process-steps" class="space-y-4"></div>
+        </div>
+        <!-- Inside the Booth -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+          <h3 class="text-subheading text-civic-blue mb-3">🔒 Inside the Voting Booth</h3>
+          <p id="inside-booth-text" class="text-body text-civic-muted"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════ VIEW: VERIFY (Misinfo + Candidates) ═══════════════════ -->
+  <main id="view-verify" class="view-page hidden pt-20 pb-8 px-4 md:px-6 max-w-7xl mx-auto">
+    <div class="flex gap-2 mb-6">
+      <button data-verify="misinfo" class="verify-tab px-4 py-2 rounded-full text-sm font-semibold bg-civic-blue text-white shadow-md active:scale-95 transition-all">Fact Checker</button>
+      <button data-verify="candidates" class="verify-tab px-4 py-2 rounded-full text-sm font-semibold bg-white text-civic-muted border border-slate-200 active:scale-95 transition-all">Candidates</button>
+    </div>
+
+    <!-- Verify: Misinfo -->
+    <div id="verify-misinfo" class="verify-panel">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <section class="md:col-span-8 bg-white border border-slate-200/80 rounded-2xl shadow-sm p-6 relative overflow-hidden" id="misinfo-panel">
+          <div class="scan-line"></div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-heading text-civic-blue flex items-center gap-2"><span class="material-symbols-outlined text-civic-accent">fact_check</span> Misinformation Detection</h2>
+            <span class="bg-civic-emerald-light text-civic-emerald text-caption px-3 py-1 rounded-full">AI-Powered</span>
+          </div>
+          <p class="text-body text-civic-muted mb-4">Paste any election-related claim to analyze its credibility.</p>
+          <div class="relative rounded-xl overflow-hidden border border-slate-200 bg-civic-surface mb-4">
+            <textarea id="verify-input" class="w-full min-h-[120px] p-4 bg-transparent border-none focus:ring-0 outline-none resize-none text-sm" placeholder="e.g. 'I got a message saying voting is tomorrow'"></textarea>
+            <button id="verify-btn" class="absolute bottom-3 right-3 bg-civic-blue text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-1.5 shadow-md hover:bg-civic-accent transition-all active:scale-95">
+              <span class="material-symbols-outlined text-[16px]">auto_awesome</span> Verify
+            </button>
+          </div>
+          <div id="verify-results" class="hidden space-y-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div id="verdict-card" class="p-3 rounded-xl border text-center"><span class="text-[10px] text-civic-muted font-bold uppercase block mb-1">Verdict</span><span id="verdict-text" class="font-bold text-lg">--</span></div>
+              <div id="risk-card" class="p-3 rounded-xl border text-center"><span class="text-[10px] text-civic-muted font-bold uppercase block mb-1">Risk</span><span id="risk-level" class="font-bold">--</span></div>
+              <div class="p-3 rounded-xl border border-blue-100 bg-blue-50 text-center"><span class="text-[10px] text-civic-muted font-bold uppercase block mb-1">Confidence</span><span id="confidence-score" class="font-bold text-civic-accent text-lg">--%</span></div>
+              <div class="p-3 rounded-xl border text-center"><span class="text-[10px] text-civic-muted font-bold uppercase block mb-1">Reliability</span><span id="source-reliability" class="font-bold">--</span></div>
+            </div>
+            <div id="fact-check-result" class="bg-blue-50 border-l-4 border-civic-accent p-4 rounded-r-lg"><h4 class="font-semibold text-civic-accent text-sm mb-1">✅ Verified Information</h4><p id="fact-check-text" class="text-sm text-slate-700"></p></div>
+          </div>
+        </section>
+        <!-- Accessibility Sidebar -->
+        <section class="md:col-span-4 space-y-4">
+          <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
+            <h3 class="text-subheading text-civic-blue mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-civic-gold">accessibility_new</span> Accessibility</h3>
+            <div class="space-y-3">
+              <button data-lang="en" class="acc-lang-btn w-full flex items-center justify-between p-3 rounded-xl border-2 border-civic-accent bg-blue-50 font-semibold text-sm">English <span class="material-symbols-outlined text-civic-accent text-[18px]" style="font-variation-settings:'FILL' 1">check_circle</span></button>
+              <button data-lang="hi" class="acc-lang-btn w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 font-medium text-sm text-slate-600 hover:border-civic-accent transition-all">Hindi <span class="text-[11px] text-civic-muted">हिन्दी</span></button>
+              <button data-lang="bn" class="acc-lang-btn w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 font-medium text-sm text-slate-600 hover:border-civic-accent transition-all">Bengali <span class="text-[11px] text-civic-muted">বাংলা</span></button>
+            </div>
+            <button id="tts-btn" class="w-full mt-4 flex items-center justify-center gap-2 py-3 border-2 border-dashed border-slate-300 rounded-xl text-civic-muted hover:border-civic-accent hover:text-civic-accent transition-all font-semibold text-sm">
+              <span class="material-symbols-outlined">record_voice_over</span> Listen to Content
+            </button>
+          </div>
+          <!-- Election Journey Flow -->
+          <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
+            <h3 class="text-subheading text-civic-blue mb-3">Election Journey</h3>
+            <div id="mini-journey" class="space-y-2"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- Verify: Candidates -->
+    <div id="verify-candidates" class="verify-panel hidden">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-heading text-civic-blue flex items-center gap-2"><span class="material-symbols-outlined">groups</span> Candidate Information</h2>
+            <span class="bg-amber-100 text-amber-700 text-caption px-3 py-1 rounded-full">⚖️ Strictly Neutral</span>
+          </div>
+          <p class="text-body text-civic-muted mb-4">Factual, unbiased candidate profiles. No opinions, no recommendations.</p>
+          <div class="flex gap-3 mb-4">
+            <select id="candidate-state" class="civic-input flex-1"><option value="">Select State</option><option value="west-bengal">West Bengal</option><option value="maharashtra">Maharashtra</option><option value="delhi">Delhi</option></select>
+            <button id="load-candidates-btn" class="px-6 py-3 bg-civic-blue text-white font-semibold rounded-xl hover:bg-civic-accent transition-all active:scale-95 shadow-md">Load</button>
+          </div>
+        </div>
+        <div id="candidates-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        <!-- Comparison Table -->
+        <div id="comparison-section" class="hidden bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+          <h3 class="text-subheading text-civic-blue mb-4">📊 Candidate Comparison</h3>
+          <div class="overflow-x-auto"><table id="comparison-table" class="w-full text-sm"><thead></thead><tbody></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════════════════ VIEW: PROFILE ═══════════════════ -->
+  <main id="view-profile" class="view-page hidden pt-20 pb-8 px-4 md:px-6 max-w-3xl mx-auto">
+    <div class="space-y-6">
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+        <div class="flex items-center gap-5 mb-5">
+          <div id="profile-avatar" class="w-16 h-16 rounded-2xl bg-gradient-to-br from-civic-blue to-civic-accent flex items-center justify-center text-white text-2xl font-bold shadow-lg"><span class="material-symbols-outlined text-3xl">person</span></div>
+          <div>
+            <h2 id="profile-name" class="text-heading text-civic-blue">Citizen</h2>
+            <p class="text-sm text-civic-muted"><span id="profile-location">India</span></p>
+            <div class="flex gap-2 mt-1">
+              <span id="profile-reg-badge" class="text-caption px-2 py-0.5 bg-slate-100 text-civic-muted rounded-full">Not Registered</span>
+              <span id="profile-voter-badge" class="hidden text-caption px-2 py-0.5 bg-blue-100 text-civic-accent rounded-full">First-time</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="p-3 bg-civic-surface rounded-xl text-center"><div class="text-xl font-bold text-civic-blue" id="p-queries">0</div><div class="text-[10px] text-civic-muted">Queries</div></div>
+          <div class="p-3 bg-civic-surface rounded-xl text-center"><div class="text-xl font-bold text-civic-blue" id="p-verified">0</div><div class="text-[10px] text-civic-muted">Verified</div></div>
+          <div class="p-3 bg-civic-surface rounded-xl text-center"><div class="text-xl font-bold text-civic-accent" id="p-impact">0</div><div class="text-[10px] text-civic-muted">Impact</div></div>
+          <div class="p-3 bg-civic-surface rounded-xl text-center"><div class="text-xl font-bold text-civic-emerald" id="p-quiz">0</div><div class="text-[10px] text-civic-muted">Quiz</div></div>
+        </div>
+      </div>
+      <!-- Activity Log -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+        <h3 class="text-subheading text-civic-blue mb-3">Recent Activity</h3>
+        <div id="activity-log" class="space-y-2"><p class="text-sm text-civic-muted italic p-4 bg-civic-surface rounded-xl">No activity yet. Start using CivicAI!</p></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ═══════ QUIZ MODAL ═══════ -->
+  <div id="quiz-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 relative animate-fadeIn">
+      <button onclick="closeQuiz()" class="absolute top-3 right-3 p-1.5 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined text-slate-400 text-[20px]">close</span></button>
+      <div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-civic-accent">quiz</span><div><h3 class="font-bold text-civic-blue">Civic Knowledge Quiz</h3><p class="text-[11px] text-civic-muted">Q <span id="quiz-current">1</span> / <span id="quiz-total">7</span></p></div></div>
+      <div class="w-full bg-slate-100 h-1.5 rounded-full mb-4 overflow-hidden"><div id="quiz-progress" class="h-full bg-civic-accent rounded-full transition-all" style="width:14%"></div></div>
+      <div id="quiz-question" class="text-lg font-semibold text-civic-blue mb-4"></div>
+      <div id="quiz-options" class="space-y-2 mb-4"></div>
+      <div id="quiz-feedback" class="hidden p-3 rounded-lg text-sm mb-4"></div>
+      <div class="flex justify-between items-center">
+        <span id="quiz-score-display" class="text-sm text-civic-muted font-medium">Score: 0</span>
+        <button id="quiz-next-btn" class="hidden px-5 py-2 bg-civic-blue text-white rounded-lg font-semibold text-sm hover:bg-civic-accent transition-all active:scale-95">Next →</button>
+      </div>
+      <div id="quiz-complete" class="hidden text-center py-8">
+        <span class="material-symbols-outlined text-[56px] text-civic-emerald mb-3">emoji_events</span>
+        <h3 class="text-heading text-civic-blue mb-2">Quiz Complete!</h3>
+        <p id="quiz-final-score" class="text-body text-civic-muted mb-4"></p>
+        <button onclick="closeQuiz()" class="px-6 py-3 bg-civic-blue text-white rounded-xl font-semibold hover:bg-civic-accent transition-all active:scale-95 shadow-md">Back to CivicAI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ BOTTOM NAV ═══════ -->
+  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2.5 bg-white/95 backdrop-blur-xl border-t border-slate-200 shadow-[0_-4px_20px_rgb(0,0,0,0.06)] rounded-t-2xl">
+    <button onclick="navigateTo('chat')" data-nav="chat" class="nav-btn nav-active flex flex-col items-center justify-center transition-all active:scale-90 py-1 px-4">
+      <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">chat_bubble</span>
+      <span class="text-[10px] font-bold mt-0.5">Chat</span>
+    </button>
+    <button onclick="navigateTo('register')" data-nav="register" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-civic-blue transition-all active:scale-90 py-1 px-4">
+      <span class="material-symbols-outlined text-xl">how_to_reg</span>
+      <span class="text-[10px] font-medium mt-0.5">Register</span>
+    </button>
+    <button onclick="navigateTo('guide')" data-nav="guide" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-civic-blue transition-all active:scale-90 py-1 px-4">
+      <span class="material-symbols-outlined text-xl">menu_book</span>
+      <span class="text-[10px] font-medium mt-0.5">Guide</span>
+    </button>
+    <button onclick="navigateTo('verify')" data-nav="verify" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-civic-blue transition-all active:scale-90 py-1 px-4">
+      <span class="material-symbols-outlined text-xl">verified</span>
+      <span class="text-[10px] font-medium mt-0.5">Verify</span>
+    </button>
+    <button onclick="navigateTo('profile')" data-nav="profile" class="nav-btn flex flex-col items-center justify-center text-slate-400 hover:text-civic-blue transition-all active:scale-90 py-1 px-4">
+      <span class="material-symbols-outlined text-xl">person</span>
+      <span class="text-[10px] font-medium mt-0.5">Profile</span>
+    </button>
+  </nav>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
