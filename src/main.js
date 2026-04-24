@@ -1,6 +1,9 @@
-// ═══════════════════════════════════════════════════
-// CivicAI – Main Application Controller (Complete)
-// ═══════════════════════════════════════════════════
+/**
+ * @fileoverview CivicAI – Main Application Controller
+ * Handles navigation, chat UI, registration flow, guide tabs,
+ * fact-checking, quiz, language switching, voice/TTS, and profile.
+ * @module main
+ */
 
 import './style.css';
 import {
@@ -20,29 +23,39 @@ let currentLang = 'en';
 let quizState = { current: 0, score: 0, answered: false };
 let isProcessing = false;
 
-// ─── Init ───
+/**
+ * Bootstraps the entire CivicAI application.
+ * Initializes all modules: navigation, chat, registration, guide,
+ * verification, timeline, dashboard, booth finder, election day,
+ * candidates, quiz, language, ELI10, voice, TTS, and animations.
+ */
 function initializeApp() {
-  initNavigation();
-  initChat();
-  initRegistration();
-  initGuideTabs();
-  initVerifyTabs();
-  initTimeline();
-  initDashboard();
-  initBoothFinder();
-  initElectionDay();
-  initCandidates();
-  initQuiz();
-  initLanguage();
-  initEli10();
-  initVoice();
-  initTTS();
-  initHeroJourney();
-  initScrollAnimations();
+  try {
+    initNavigation();
+    initChat();
+    initRegistration();
+    initGuideTabs();
+    initVerifyTabs();
+    initTimeline();
+    initDashboard();
+    initBoothFinder();
+    initElectionDay();
+    initCandidates();
+    initQuiz();
+    initLanguage();
+    initEli10();
+    initVoice();
+    initTTS();
+    initHeroJourney();
+    initScrollAnimations();
 
-  const params = new URLSearchParams(window.location.search);
-  const apiKey = params.get('gemini_key');
-  if (apiKey) { setApiKey(apiKey); }
+    const params = new URLSearchParams(window.location.search);
+    const apiKey = params.get('gemini_key');
+    if (apiKey) { setApiKey(apiKey); }
+  } catch (err) {
+    alert("Initialization Error: " + err.message + "\n\nStack: " + err.stack);
+    console.error("Initialization Error:", err);
+  }
 }
 
 if (document.readyState === 'loading') {
@@ -56,6 +69,12 @@ function initNavigation() {
   window.navigateTo = navigateTo;
 }
 
+/**
+ * Navigates to a specific view by ID.
+ * Hides all other views, activates the nav button, and triggers
+ * view-specific rendering (guide reminders, profile updates, etc.).
+ * @param {string} viewId - The view identifier (chat|register|guide|verify|profile).
+ */
 function navigateTo(viewId) {
   document.querySelectorAll('.view-page').forEach(v => {
     v.classList.add('hidden');
@@ -100,6 +119,10 @@ function initChat() {
   });
 }
 
+/**
+ * Sends the user's chat message to the AI service and renders the response.
+ * Prevents duplicate submissions via the `isProcessing` flag.
+ */
 async function sendMessage() {
   if (isProcessing) return;
   const input = document.getElementById('chat-input');
@@ -355,6 +378,7 @@ function initVerifyTabs() {
   window.showJourneyDetail = showJourneyDetail;
 }
 
+/** Runs the misinformation detection flow and renders results. */
 async function runFactCheck() {
   const input = document.getElementById('verify-input');
   const message = input.value.trim();
@@ -795,8 +819,7 @@ function renderMiniJourney() {
   });
 }
 
-// Call mini journey on verify tab open
-const originalNavigate = navigateTo;
+// Mini journey is rendered via updateProfilePage() → renderMiniJourney()
 
 // ═══════════════════ PROFILE ═══════════════════
 function updateProfilePage() {
@@ -846,8 +869,19 @@ function initScrollAnimations() {
 }
 
 // ═══════════════════ UTILITIES ═══════════════════
+
+/**
+ * Escapes HTML entities in a string to prevent XSS.
+ * @param {string} text - Raw text to escape.
+ * @returns {string} HTML-safe string.
+ */
 function escapeHtml(text) { const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
+/**
+ * Converts basic markdown (bold, newlines, bullets) to HTML.
+ * @param {string} text - Markdown-formatted text.
+ * @returns {string} HTML string.
+ */
 function formatMarkdown(text) {
   return text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')

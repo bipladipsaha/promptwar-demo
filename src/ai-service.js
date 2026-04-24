@@ -1,13 +1,21 @@
-// ═══════════════════════════════════════════════════
-// CivicAI – Intelligent Election Companion
-// Complete AI Service: 13 Modules
-// Hybrid: Mock + Google Gemini API
-// ═══════════════════════════════════════════════════
+/**
+ * @fileoverview CivicAI AI Service – 13 Modules
+ * Provides hybrid (Mock + Google Gemini) AI capabilities including:
+ * voter registration, journey tracking, booth finder, dynamic timeline,
+ * smart reminders, misinformation detection, election day assistant,
+ * context-aware chatbot, scenario simulation, candidate info,
+ * offline support, quiz engine, and journey details.
+ * @module ai-service
+ */
 
 // ─── Configuration ───
 let GEMINI_API_KEY = '';
 let USE_LIVE_API = false;
 
+/**
+ * Sets the Gemini API key and enables live API mode.
+ * @param {string} key - The Google Gemini API key.
+ */
 export function setApiKey(key) {
   GEMINI_API_KEY = key;
   USE_LIVE_API = !!key;
@@ -65,8 +73,13 @@ const userContext = {
   offlineCache: {}
 };
 
+/** @returns {object} The current user context object. */
 export function getUserContext() { return userContext; }
 
+/**
+ * Merges new data into the user profile and recalculates age.
+ * @param {object} data - Profile fields to update.
+ */
 export function updateUserProfile(data) {
   Object.assign(userContext, data);
   if (data.dob) {
@@ -105,6 +118,11 @@ export function getDistricts(stateKey) { return stateData[stateKey]?.districts |
 // MODULE 1: SECURE VOTER REGISTRATION
 // ═══════════════════════════════════════════════════
 
+/**
+ * Validates a 12-digit Aadhaar number and checks for duplicates.
+ * @param {string} aadhaar - The Aadhaar number to validate.
+ * @returns {{ valid: boolean, masked?: string, error?: string }}
+ */
 export function validateAadhaar(aadhaar) {
   const cleaned = aadhaar.replace(/\s/g, '');
   if (!/^\d{12}$/.test(cleaned)) {
@@ -117,6 +135,11 @@ export function validateAadhaar(aadhaar) {
   return { valid: true, masked: `XXXX-XXXX-${cleaned.slice(-4)}` };
 }
 
+/**
+ * Validates a 10-digit Indian mobile number (starting with 6-9).
+ * @param {string} mobile - The mobile number to validate.
+ * @returns {{ valid: boolean, masked?: string, error?: string }}
+ */
 export function validateMobile(mobile) {
   const cleaned = mobile.replace(/\s/g, '');
   if (!/^[6-9]\d{9}$/.test(cleaned)) {
@@ -415,6 +438,12 @@ const misinfoDatabase = [
   { pattern: /ink.*removable|ink.*wash|remove.*ink/i, risk: 'High', confidence: 91, reliability: 'Low', verdict: 'False', fact: 'The indelible ink used in Indian elections contains silver nitrate and cannot be easily removed. It fades naturally after 2-3 weeks.' }
 ];
 
+/**
+ * Analyzes a message for election misinformation.
+ * Uses Gemini API when available, falls back to pattern matching.
+ * @param {string} message - The claim to fact-check.
+ * @returns {Promise<{risk: string, confidence: number, reliability: string, verdict: string, fact: string}>}
+ */
 export async function detectMisinformation(message) {
   userContext.verifiedCount++;
   userContext.impactScore += 15 + Math.floor(Math.random() * 10);
@@ -493,6 +522,12 @@ export function getElectionDayChecklist() {
 // MODULE 8: CONTEXT-AWARE AI CHATBOT
 // ═══════════════════════════════════════════════════
 
+/**
+ * Gets an AI response for a user message.
+ * Tries Gemini API first, falls back to mock responses.
+ * @param {string} userMessage - The user's chat message.
+ * @returns {Promise<{text: string, eli10?: string, confidence: number}>}
+ */
 export async function getAIResponse(userMessage) {
   userContext.queriesCount++;
   userContext.conversationHistory.push({ role: 'user', content: userMessage });

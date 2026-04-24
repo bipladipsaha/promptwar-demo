@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CivicAI – Intelligent Election Companion</title>
   <meta name="description" content="AI-powered civic platform: secure voter registration, personalized election guidance, misinformation detection, polling booth finder, and more."/>
+  <meta name="theme-color" content="#0a2540"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/src/style.css"/>
 </head>
 <body class="bg-civic-surface font-inter text-slate-800 min-h-screen pb-24">
+  <!-- Skip Navigation -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[200] focus:bg-civic-blue focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
 
   <!-- ═══════ TOP BAR ═══════ -->
-  <header class="flex justify-between items-center w-full px-4 md:px-6 h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm fixed top-0 z-50">
+  <header role="banner" aria-label="CivicAI navigation" class="flex justify-between items-center w-full px-4 md:px-6 h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-sm fixed top-0 z-50">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-civic-blue to-civic-accent flex items-center justify-center shadow-md">
         <span class="material-symbols-outlined text-white text-lg">account_balance</span>
@@ -24,13 +27,13 @@
     </div>
     <div class="flex items-center gap-3">
       <div class="relative" id="lang-dropdown-wrap">
-        <button id="lang-btn" aria-label="Translate" class="p-2 hover:bg-slate-100 transition-colors rounded-full text-civic-muted active:scale-90">
-          <span class="material-symbols-outlined text-[20px]">translate</span>
+        <button id="lang-btn" aria-label="Change language" aria-expanded="false" aria-haspopup="true" class="p-2 hover:bg-slate-100 transition-colors rounded-full text-civic-muted active:scale-90">
+          <span class="material-symbols-outlined text-[20px]" aria-hidden="true">translate</span>
         </button>
-        <div id="lang-dropdown" class="hidden absolute right-0 top-12 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 min-w-[150px] z-50 animate-fadeIn">
-          <button data-lang="en" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>English</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check">check_circle</span></button>
-          <button data-lang="hi" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>हिन्दी</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden">check_circle</span></button>
-          <button data-lang="bn" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>বাংলা</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden">check_circle</span></button>
+        <div id="lang-dropdown" role="menu" aria-label="Language selection" class="hidden absolute right-0 top-12 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 min-w-[150px] z-50 animate-fadeIn">
+          <button data-lang="en" role="menuitem" aria-label="Switch to English" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>English</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check" aria-hidden="true">check_circle</span></button>
+          <button data-lang="hi" role="menuitem" aria-label="Switch to Hindi" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>हिन्दी</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden" aria-hidden="true">check_circle</span></button>
+          <button data-lang="bn" role="menuitem" aria-label="Switch to Bengali" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>বাংলা</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden" aria-hidden="true">check_circle</span></button>
         </div>
       </div>
       <button id="eli10-toggle" aria-label="Simple Mode" class="p-2 hover:bg-amber-50 transition-colors rounded-full text-civic-muted active:scale-90" title="Simple Mode">
@@ -43,7 +46,7 @@
   </header>
 
   <!-- ═══════════════════ VIEW: CHAT (HOME) ═══════════════════ -->
-  <main id="view-chat" class="view-page pt-20 max-w-6xl mx-auto px-4 md:px-6">
+  <main id="view-chat" class="view-page pt-20 max-w-6xl mx-auto px-4 md:px-6" role="main" id-anchor="main-content">
     <!-- Hero -->
     <section class="py-8 grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
       <div class="lg:col-span-3 space-y-5">
@@ -97,7 +100,7 @@
           </div>
           <span class="px-2 py-0.5 bg-blue-50 text-civic-accent text-[10px] font-bold rounded uppercase">Gemini + Mock</span>
         </div>
-        <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-4" role="log" aria-live="polite" aria-label="Chat messages"></div>
         <div class="p-4 border-t border-slate-100 bg-slate-50/30">
           <div id="quick-prompts" class="flex gap-2 mb-3 flex-wrap">
             <button class="quick-prompt qp-btn">How do I vote?</button>
@@ -107,7 +110,8 @@
             <button class="quick-prompt qp-btn">Check a fact</button>
           </div>
           <div class="relative">
-            <textarea id="chat-input" class="w-full pl-4 pr-24 py-3 rounded-xl border border-slate-200 bg-white focus:border-civic-accent focus:ring-2 focus:ring-civic-accent/10 transition-all resize-none text-sm" placeholder="Ask your election question..." rows="2"></textarea>
+            <label for="chat-input" class="sr-only">Ask your election question</label>
+            <textarea id="chat-input" class="w-full pl-4 pr-24 py-3 rounded-xl border border-slate-200 bg-white focus:border-civic-accent focus:ring-2 focus:ring-civic-accent/10 transition-all resize-none text-sm" placeholder="Ask your election question..." rows="2" aria-label="Type your election question"></textarea>
             <div class="absolute right-3 bottom-3 flex gap-2">
               <button id="voice-btn" aria-label="Voice Input" class="p-1.5 text-slate-400 hover:text-civic-blue transition-colors active:scale-90" title="Voice Input">
                 <span class="material-symbols-outlined text-[20px]">mic</span>
@@ -362,12 +366,13 @@
           </div>
           <p class="text-body text-civic-muted mb-4">Paste any election-related claim to analyze its credibility.</p>
           <div class="relative rounded-xl overflow-hidden border border-slate-200 bg-civic-surface mb-4">
-            <textarea id="verify-input" class="w-full min-h-[120px] p-4 bg-transparent border-none focus:ring-0 outline-none resize-none text-sm" placeholder="e.g. 'I got a message saying voting is tomorrow'"></textarea>
+            <label for="verify-input" class="sr-only">Enter election claim to verify</label>
+            <textarea id="verify-input" class="w-full min-h-[120px] p-4 bg-transparent border-none focus:ring-0 outline-none resize-none text-sm" placeholder="e.g. 'I got a message saying voting is tomorrow'" aria-label="Enter election claim to fact-check"></textarea>
             <button id="verify-btn" class="absolute bottom-3 right-3 bg-civic-blue text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-1.5 shadow-md hover:bg-civic-accent transition-all active:scale-95">
               <span class="material-symbols-outlined text-[16px]">auto_awesome</span> Verify
             </button>
           </div>
-          <div id="verify-results" class="hidden space-y-4">
+          <div id="verify-results" class="hidden space-y-4" aria-live="polite" aria-label="Fact check results">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div id="verdict-card" class="p-3 rounded-xl border text-center"><span class="text-[10px] text-civic-muted font-bold uppercase block mb-1">Verdict</span><span id="verdict-text" class="font-bold text-lg">--</span></div>
               <div id="risk-card" class="p-3 rounded-xl border text-center"><span class="text-[10px] text-civic-muted font-bold uppercase block mb-1">Risk</span><span id="risk-level" class="font-bold">--</span></div>
@@ -454,7 +459,7 @@
   </main>
 
   <!-- ═══════ QUIZ MODAL ═══════ -->
-  <div id="quiz-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+  <div id="quiz-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Civic Knowledge Quiz">
     <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 relative animate-fadeIn">
       <button onclick="closeQuiz()" aria-label="Close" class="absolute top-3 right-3 p-1.5 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined text-slate-400 text-[20px]">close</span></button>
       <div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-civic-accent">quiz</span><div><h3 class="font-bold text-civic-blue">Civic Knowledge Quiz</h3><p class="text-[11px] text-civic-muted">Q <span id="quiz-current">1</span> / <span id="quiz-total">7</span></p></div></div>
@@ -476,7 +481,7 @@
   </div>
 
   <!-- ═══════ BOTTOM NAV ═══════ -->
-  <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2.5 bg-white/95 backdrop-blur-xl border-t border-slate-200 shadow-[0_-4px_20px_rgb(0,0,0,0.06)] rounded-t-2xl">
+  <nav aria-label="Main navigation" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 py-2.5 bg-white/95 backdrop-blur-xl border-t border-slate-200 shadow-[0_-4px_20px_rgb(0,0,0,0.06)] rounded-t-2xl">
     <button onclick="navigateTo('chat')" data-nav="chat" class="nav-btn nav-active flex flex-col items-center justify-center transition-all active:scale-90 py-1 px-4">
       <span class="material-symbols-outlined text-xl" style="font-variation-settings:'FILL' 1">chat_bubble</span>
       <span class="text-[10px] font-bold mt-0.5">Chat</span>
