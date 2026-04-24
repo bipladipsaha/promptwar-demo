@@ -671,6 +671,7 @@ function initLanguage() {
     btn.addEventListener('click', () => {
       currentLang = btn.dataset.lang;
       setLanguage(currentLang);
+      document.documentElement.lang = currentLang;
       document.querySelectorAll('.lang-check').forEach(c => c.classList.add('hidden'));
       btn.querySelector('.lang-check').classList.remove('hidden');
       dropdown.classList.add('hidden');
@@ -685,6 +686,7 @@ function initLanguage() {
       btn.className = 'acc-lang-btn w-full flex items-center justify-between p-3 rounded-xl border-2 border-civic-accent bg-blue-50 font-semibold text-sm';
       currentLang = btn.dataset.lang;
       setLanguage(currentLang);
+      document.documentElement.lang = currentLang;
     });
   });
 }

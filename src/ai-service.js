@@ -444,21 +444,21 @@ export async function detectMisinformation(message) {
 }
 
 async function geminiFactCheck(message) {
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+  const res = await fetch('/api/fact-check', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { role: 'user', parts: [{ text: 'You are a fact-checking AI for Indian elections. Analyze claims and respond with ONLY valid JSON: {"risk":"Low|Medium|High|Critical","confidence":number,"reliability":"Very Low|Low|Moderate|High","verdict":"True|False|Uncertain","fact":"explanation"}' }] },
-      contents: [{ role: 'user', parts: [{ text: `Fact-check this election claim: "${message}"` }] }]
-    })
+    body: JSON.stringify({ message })
   });
+  
+  if (!res.ok) {
+    return { risk: 'Unknown', confidence: 70, reliability: 'Moderate', verdict: 'Uncertain', fact: "Error reaching fact check service", isDetected: false };
+  }
+  
   const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
   try {
-    const result = JSON.parse(text.replace(/```json?\n?/g, '').replace(/```/g, '').trim());
-    return { ...result, isDetected: result.risk !== 'Low' };
-  } catch {
-    return { risk: 'Unknown', confidence: 70, reliability: 'Moderate', verdict: 'Uncertain', fact: text, isDetected: false };
+    return { ...data, isDetected: data.risk !== 'Low' };
+  } catch (e) {
+    return { risk: 'Unknown', confidence: 70, reliability: 'Moderate', verdict: 'Uncertain', fact: "Error processing fact check", isDetected: false };
   }
 }
 
@@ -586,29 +586,31 @@ Rules:
 - Reference official sources (eci.gov.in, nvsp.in)
 - Keep responses concise and helpful`;
 
-  const cleanHistory = [];
-  ctx.conversationHistory.forEach(msg => {
-    const role = msg.role === 'assistant' ? 'model' : 'user';
-    if (cleanHistory.length > 0 && cleanHistory[cleanHistory.length - 1].role === role) {
-      cleanHistory[cleanHistory.length - 1].parts[0].text += `\n\n${msg.content}`;
-    } else {
-      cleanHistory.push({ role, parts: [{ text: msg.content }] });
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        history: ctx.conversationHistory,
+        message: message,
+        systemInstruction: systemPrompt
+      })
+    });
+    
+    if (!res.ok) {
+      throw new Error("Failed to reach chat service");
     }
-  });
 
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { role: 'user', parts: [{ text: systemPrompt }] },
-      contents: cleanHistory.slice(-10)
-    })
-  });
-
-  const data = await res.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'I apologize, I could not process that. Please try again.';
-  ctx.conversationHistory.push({ role: 'assistant', content: text });
-  return { text, eli10: ctx.eli10Mode ? text : null, confidence: 90 + Math.floor(Math.random() * 9) };
+    const data = await res.json();
+    const text = data.text || 'I apologize, I could not process that. Please try again.';
+    ctx.conversationHistory.push({ role: 'assistant', content: text });
+    return { text, eli10: ctx.eli10Mode ? text : null, confidence: 90 + Math.floor(Math.random() * 9) };
+  } catch (error) {
+    console.error("Chat API Error:", error);
+    const text = 'I apologize, I could not reach the server. Please try again later.';
+    ctx.conversationHistory.push({ role: 'assistant', content: text });
+    return { text, eli10: ctx.eli10Mode ? text : null, confidence: 50 };
+  }
 }
 
 // ═══════════════════════════════════════════════════

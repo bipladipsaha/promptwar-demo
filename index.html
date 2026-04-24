@@ -5,40 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CivicAI – Intelligent Election Companion</title>
   <meta name="description" content="AI-powered civic platform: secure voter registration, personalized election guidance, misinformation detection, polling booth finder, and more."/>
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "civic-blue": "#0a2540",
-            "civic-emerald": "#059669",
-            "civic-emerald-light": "#d1fae5",
-            "civic-navy": "#10294a",
-            "civic-accent": "#4059aa",
-            "civic-gold": "#f59e0b",
-            "civic-surface": "#f0f4f8",
-            "civic-card": "#ffffff",
-            "civic-muted": "#64748b",
-            "civic-danger": "#dc2626",
-            "civic-success": "#16a34a",
-            "civic-warn": "#d97706"
-          },
-          fontFamily: { 'inter': ['Inter', 'sans-serif'] },
-          fontSize: {
-            "display": ["42px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "800" }],
-            "heading": ["24px", { lineHeight: "1.3", fontWeight: "700" }],
-            "subheading": ["18px", { lineHeight: "1.4", fontWeight: "600" }],
-            "body": ["15px", { lineHeight: "1.6", fontWeight: "400" }],
-            "caption": ["12px", { lineHeight: "1.3", fontWeight: "600" }]
-          }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="/src/style.css"/>
 </head>
 <body class="bg-civic-surface font-inter text-slate-800 min-h-screen pb-24">
@@ -56,7 +24,7 @@
     </div>
     <div class="flex items-center gap-3">
       <div class="relative" id="lang-dropdown-wrap">
-        <button id="lang-btn" class="p-2 hover:bg-slate-100 transition-colors rounded-full text-civic-muted active:scale-90">
+        <button id="lang-btn" aria-label="Translate" class="p-2 hover:bg-slate-100 transition-colors rounded-full text-civic-muted active:scale-90">
           <span class="material-symbols-outlined text-[20px]">translate</span>
         </button>
         <div id="lang-dropdown" class="hidden absolute right-0 top-12 bg-white border border-slate-200 rounded-xl shadow-xl p-1.5 min-w-[150px] z-50 animate-fadeIn">
@@ -65,7 +33,7 @@
           <button data-lang="bn" class="lang-option w-full text-left px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors flex justify-between items-center"><span>বাংলা</span><span class="material-symbols-outlined text-civic-accent text-sm lang-check hidden">check_circle</span></button>
         </div>
       </div>
-      <button id="eli10-toggle" class="p-2 hover:bg-amber-50 transition-colors rounded-full text-civic-muted active:scale-90" title="Simple Mode">
+      <button id="eli10-toggle" aria-label="Simple Mode" class="p-2 hover:bg-amber-50 transition-colors rounded-full text-civic-muted active:scale-90" title="Simple Mode">
         <span class="material-symbols-outlined text-[20px]">child_care</span>
       </button>
       <div id="user-avatar" class="w-8 h-8 rounded-full bg-civic-accent flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:ring-2 hover:ring-civic-accent/30 transition-all" onclick="navigateTo('profile')">
@@ -141,10 +109,10 @@
           <div class="relative">
             <textarea id="chat-input" class="w-full pl-4 pr-24 py-3 rounded-xl border border-slate-200 bg-white focus:border-civic-accent focus:ring-2 focus:ring-civic-accent/10 transition-all resize-none text-sm" placeholder="Ask your election question..." rows="2"></textarea>
             <div class="absolute right-3 bottom-3 flex gap-2">
-              <button id="voice-btn" class="p-1.5 text-slate-400 hover:text-civic-blue transition-colors active:scale-90" title="Voice Input">
+              <button id="voice-btn" aria-label="Voice Input" class="p-1.5 text-slate-400 hover:text-civic-blue transition-colors active:scale-90" title="Voice Input">
                 <span class="material-symbols-outlined text-[20px]">mic</span>
               </button>
-              <button id="send-btn" class="p-2 bg-civic-blue text-white rounded-lg hover:bg-civic-accent transition-all shadow-sm active:scale-90">
+              <button id="send-btn" aria-label="Send Message" class="p-2 bg-civic-blue text-white rounded-lg hover:bg-civic-accent transition-all shadow-sm active:scale-90">
                 <span class="material-symbols-outlined text-[18px]">send</span>
               </button>
             </div>
@@ -488,7 +456,7 @@
   <!-- ═══════ QUIZ MODAL ═══════ -->
   <div id="quiz-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 relative animate-fadeIn">
-      <button onclick="closeQuiz()" class="absolute top-3 right-3 p-1.5 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined text-slate-400 text-[20px]">close</span></button>
+      <button onclick="closeQuiz()" aria-label="Close" class="absolute top-3 right-3 p-1.5 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined text-slate-400 text-[20px]">close</span></button>
       <div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-civic-accent">quiz</span><div><h3 class="font-bold text-civic-blue">Civic Knowledge Quiz</h3><p class="text-[11px] text-civic-muted">Q <span id="quiz-current">1</span> / <span id="quiz-total">7</span></p></div></div>
       <div class="w-full bg-slate-100 h-1.5 rounded-full mb-4 overflow-hidden"><div id="quiz-progress" class="h-full bg-civic-accent rounded-full transition-all" style="width:14%"></div></div>
       <div id="quiz-question" class="text-lg font-semibold text-civic-blue mb-4"></div>
