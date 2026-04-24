@@ -8,8 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.cjs",
-    "test:ci": "node --experimental-vm-modules node_modules/.bin/jest --config jest.config.cjs --ci --coverage"
+    "test": "npx jest --config jest.config.cjs",
+    "test:ci": "npx jest --config jest.config.cjs --ci --coverage"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

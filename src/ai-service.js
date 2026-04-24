@@ -9,16 +9,22 @@
  */
 
 // ─── Configuration ───
-let GEMINI_API_KEY = '';
 let USE_LIVE_API = false;
 
 /**
- * Sets the Gemini API key and enables live API mode.
- * @param {string} key - The Google Gemini API key.
+ * Initializes the AI service by checking backend health.
+ * If the backend has Gemini configured, enables live API mode.
  */
-export function setApiKey(key) {
-  GEMINI_API_KEY = key;
-  USE_LIVE_API = !!key;
+export async function initializeAIService() {
+  try {
+    const res = await fetch('/api/health');
+    const data = await res.json();
+    USE_LIVE_API = data.geminiConfigured;
+    console.log('[CivicAI] AI Service initialized. Live API:', USE_LIVE_API);
+  } catch (e) {
+    console.log('[CivicAI] Could not reach backend, using mock AI mode.');
+    USE_LIVE_API = false;
+  }
 }
 
 // ─── MODULE: User Context (Memory Engine) ───
@@ -449,7 +455,7 @@ export async function detectMisinformation(message) {
   userContext.impactScore += 15 + Math.floor(Math.random() * 10);
   logActivity('verify', `Fact-checked: "${message.substring(0, 40)}..."`);
 
-  if (USE_LIVE_API && GEMINI_API_KEY) {
+  if (USE_LIVE_API) {
     try {
       return await geminiFactCheck(message);
     } catch (e) {
@@ -533,7 +539,7 @@ export async function getAIResponse(userMessage) {
   userContext.conversationHistory.push({ role: 'user', content: userMessage });
   logActivity('chat', `Asked: "${userMessage.substring(0, 50)}..."`);
 
-  if (USE_LIVE_API && GEMINI_API_KEY) {
+  if (USE_LIVE_API) {
     try {
       return await callGeminiAPI(userMessage);
     } catch (e) {

@@ -10,7 +10,7 @@ import {
   getAIResponse, detectMisinformation,
   getTimeline, simulateScenario, getQuizQuestions, getReminders,
   getJourneyDetail, getUserContext, updateUserProfile,
-  setLanguage, setEli10, getStateName, logActivity, setApiKey,
+  setLanguage, setEli10, getStateName, logActivity, initializeAIService,
   validateAadhaar, validateMobile, sendOTP, verifyOTP,
   performRegistration, getJourneyStatus, getStateData, getDistricts,
   findPollingBooth, assignBooth, getElectionDayChecklist, getCandidates
@@ -29,7 +29,7 @@ let isProcessing = false;
  * verification, timeline, dashboard, booth finder, election day,
  * candidates, quiz, language, ELI10, voice, TTS, and animations.
  */
-function initializeApp() {
+async function initializeApp() {
   try {
     initNavigation();
     initChat();
@@ -49,9 +49,7 @@ function initializeApp() {
     initHeroJourney();
     initScrollAnimations();
 
-    const params = new URLSearchParams(window.location.search);
-    const apiKey = params.get('gemini_key');
-    if (apiKey) { setApiKey(apiKey); }
+    await initializeAIService();
   } catch (err) {
     alert("Initialization Error: " + err.message + "\n\nStack: " + err.stack);
     console.error("Initialization Error:", err);
