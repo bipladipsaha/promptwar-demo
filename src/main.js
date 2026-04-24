@@ -21,7 +21,7 @@ let quizState = { current: 0, score: 0, answered: false };
 let isProcessing = false;
 
 // ─── Init ───
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
   initNavigation();
   initChat();
   initRegistration();
@@ -43,7 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const apiKey = params.get('gemini_key');
   if (apiKey) { setApiKey(apiKey); }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}
 
 // ═══════════════════ NAVIGATION ═══════════════════
 function initNavigation() {
